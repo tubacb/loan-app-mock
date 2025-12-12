@@ -17,9 +17,24 @@ test('default flow with mock', async ({page}) => {
     // intercept the route only for specific query parameters (default values)
     await page.route('**/api/loan-calc?amount=500&period=12', async route => {
         await route.fulfill({
-            json: amountResponse,
-            // status: 200 by default
-            // status: 400 in case of error
+            contentType: 'application/json',
+            body: JSON.stringify(amountResponse),
+        });
+    });
+
+    const amountResponse24 = {paymentAmountMonthly: 99.9};
+    // intercept the route only for specific query parameters (default values)
+    await page.route('**/api/loan-calc?amount=500&period=24', async route => {
+        await route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify(amountResponse24),
+        });
+    });
+
+    // intercept the route only for specific query parameters (default values)
+    await page.route('**/api/loan-calc?amount=500&period=24', async route => {
+        await route.fulfill({
+            status:400,
         });
     });
 
@@ -43,7 +58,7 @@ test('main flow', async ({ page }) => {
   await page.getByTestId('final-page-success-ok-button').click();
 });
 
-test('redirect flow', async ({ page, request }) => {
+test('redirect flow', async ({ page }) => {
   await page.goto(serviceURL);
   await page.getByTestId('id-image-element-button-image-1').click();
   await expect( page.getByTestId('id-small-loan-calculator-field-apply') ).toBeInViewport()
