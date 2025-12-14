@@ -25,7 +25,7 @@ test('default flow with mock', async ({page}) => {
     expect(monthlyValue).toBe(amountValue);
 })
 
-test.only('amount error flow with mock', async ({page}) => {
+test('amount error flow with mock', async ({page}) => {
 
     await page.route('**/api/loan-calc?amount=50&period=12', async route => {
         await route.fulfill({
